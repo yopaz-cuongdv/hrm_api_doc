@@ -1,0 +1,5 @@
+urls:
+  - url: "/specs/openapi.AuthApi.yaml"
+    name: "Auth API"
+  - url: "/specs/openapi.UserApi.yaml"
+    name: "User API"

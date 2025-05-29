@@ -1,0 +1,11 @@
+services:
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    container_name: swagger_ui
+    ports:
+      - "8899:8080"
+    volumes:
+      - ./tsp-output/schema:/usr/share/nginx/html/specs  # chứa các .yaml
+      - ./swagger-config.yaml:/usr/share/nginx/html/swagger-config.yaml
+    environment:
+      CONFIG_URL: /swagger-config.yaml
