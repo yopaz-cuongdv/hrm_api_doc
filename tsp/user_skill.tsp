@@ -18,7 +18,6 @@ namespace UserSkillApi {
     }
 
     model CreateUserSkillInput {
-      user_id: int32;
       skill_id: int32;
       level: string;
       years_experience: float32;
