@@ -13,19 +13,19 @@ namespace UserSkillApi {
       @key id: int32;
       skill_id: int32;
       user_id: int32;
-      level: string;
+      level: float32;
       years_experience: float32;
     }
 
     model CreateUserSkillInput {
       skill_id: int32;
-      level: string;
+      level: float32;
       years_experience: float32;
     }
 
     model UpdateUserSkillInput {
       skill_id: int32;
-      level: string;
+      level: float32;
       years_experience: float32;
     }
 
