@@ -4,6 +4,7 @@ using Http;
 
 
 @service(#{ title: "Auth API Service" })
+@server("http://id.yopaz.test/api", "LocalServer")
 
 namespace AuthApi {
 
@@ -23,7 +24,6 @@ namespace AuthApi {
      access_token: string;
    }
 
-   @route("/auth")
    @tag("Auth")
     interface auth {
         @route("/register")

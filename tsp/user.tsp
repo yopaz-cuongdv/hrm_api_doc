@@ -3,10 +3,10 @@ import "@typespec/rest";
 
 
 using Http;
-
+using Rest;
 
 @service(#{ title: "User CRUD Service" })
-// @server("http://localhost:8080", "UserServer")
+@server("http://id.yopaz.test/api", "LocalServer")
 // @server("http://test.me:8080", "TestServer")
 
 namespace UserApi {
@@ -37,10 +37,8 @@ namespace UserApi {
       totalPages: int32;
     }
 
-
-
     // # User CRUD (requires token)
-    @route("/users")
+    @route("/user")
     @tag("Users")
     @useAuth(BearerAuth)
 

@@ -1,5 +1,7 @@
 
 import "./auth.tsp";
 import "./user.tsp";
-import "./employee_skill_api.tsp";
+import "./skill_category.tsp";
+import "./skill.tsp";
+import "./user_skill.tsp";
 
