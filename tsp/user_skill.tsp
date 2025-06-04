@@ -10,8 +10,7 @@ using Rest;
 
 namespace UserSkillApi {
     model UserSkill {
-      id: int32;
-      @key
+      @key id: int32;
       skill_id: int32;
       user_id: int32;
       level: string;
@@ -37,28 +36,44 @@ namespace UserSkillApi {
       totalPages: int32;
     }
 
-    @route("/skills")
-    @tag("Skills")
+       model ValidateError {
+        message: string;
+        errors: Record<string[]>;
+    }
+    model ValidationErrorResponse {
+        ...Response<422>;
+        ...Body<ValidateError>;
+    }
+
+    model PermissionErrorResponse {
+        ...Response<403>;
+        ...Body<{ message: "Forbidden" }>;
+    }
+
+    @route("/user/{userId}/skills")
+    @tag("User Skills")
     @useAuth(BearerAuth)
 
     interface userSkill {
         @get()
           list(
+            @path userId: int32,
             @query search?: string,
             @query sort_by?: string,
             @query sort_order?: "asc" | "desc",
             @query per_page?: int32,
-          ): UserSkillPagination[];
+          ): UserSkillPagination[] | NotFoundResponse;
+
         @post()
-        create(@body input: CreateUserSkillInput): UserSkill;
-
+        create(@path userId: int32, @body input: CreateUserSkillInput): UserSkill | ValidationErrorResponse | PermissionErrorResponse;
+        
         @get()
-        show(@path userSkillId: int32): UserSkill;
+        show(@path userId: int32, @path userSkillId: int32): UserSkill | NotFoundResponse;
 
-      @put()
-      update(@path userSkillId: int32, @body input: UpdateUserSkillInput): UserSkill;
+        @put()
+        update( @path userId: int32, @path userSkillId: int32, @body input: UpdateUserSkillInput): UserSkill | ValidationErrorResponse | PermissionErrorResponse;
 
-      @delete()
-      delete(@path userSkillId: int32): void;
+        @delete()
+        delete(@path userId: int32, @path userSkillId: int32): void | NotFoundResponse;
     }
 }

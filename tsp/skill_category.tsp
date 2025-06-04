@@ -9,8 +9,8 @@ using Rest;
 
 namespace SkillCategoryApi {
     model SkillCategory {
-      id: int32;
-      @key
+      @key id: int32;
+      parent_id: int32;
       key: string;
       name: string;
       type: string;
@@ -31,7 +31,22 @@ namespace SkillCategoryApi {
       totalPages: int32;
     }
 
-    @route("/skill-sheet/skill-categories")
+    model ValidateError {
+        message: string;
+        errors: Record<string[]>;
+    }
+    model ValidationErrorResponse {
+        ...Response<422>;
+        ...Body<ValidateError>;
+    }
+
+    @doc("Trường hợp người dung không phải là bod, or HR")
+    model PermissionErrorResponse {
+        ...Response<403>;
+        ...Body<{ message: "Forbidden" }>;
+    }
+
+    @route("/skills/categories")
     @tag("Skill Categories")
     @useAuth(BearerAuth)
 
@@ -43,16 +58,17 @@ namespace SkillCategoryApi {
             @query sort_order?: "asc" | "desc",
             @query per_page?: int32,
             ): SkillCategoryPagination[];
+
         @post()
-        create(@body input: CreateSkillCategoryInput): SkillCategory;
+        create(@body input: CreateSkillCategoryInput): SkillCategory | ValidationErrorResponse | PermissionErrorResponse;
 
         @get()
-        show(@path skillCategoryId: int32): SkillCategory;
+        show(@path skillCategoryId: int32): SkillCategory | NotFoundResponse;
 
-      @put()
-      update(@path skillCategoryId: int32, @body input: CreateSkillCategoryInput): SkillCategory;
+        @put()
+        update(@path skillCategoryId: int32, @body input: CreateSkillCategoryInput): SkillCategory | ValidationErrorResponse | PermissionErrorResponse;
 
-      @delete()
-      delete(@path skillCategoryId: int32): void;
+        @delete()
+        delete(@path skillCategoryId: int32): void | NotFoundResponse | PermissionErrorResponse;
     }
 }

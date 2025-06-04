@@ -10,17 +10,33 @@ using Rest;
 
 namespace SkillApi {
     model Skill {
-      id: int32;
-      @key
+      @key id: int32;
       skill_category_id: int32;
+      key: string;
       name: string;
     }
 
     model CreateSkillInput {
       skill_category_id: int32;
+      key: string;
       name: string;
     }
 
+    model ValidateError {
+        message: string;
+        errors: Record<string[]>;
+    }
+    model ValidationErrorResponse {
+        ...Response<422>;
+        ...Body<ValidateError>;
+    }
+
+    @doc("Trường hợp người dung không phải là bod, or HR")
+    model PermissionErrorResponse {
+        ...Response<403>;
+        ...Body<{ message: "Forbidden" }>;
+    }
+    
     model SkillPagination {
       data: Skill[];
       page: int32;
@@ -28,7 +44,7 @@ namespace SkillApi {
       totalPages: int32;
     }
 
-    @route("/skill-sheet/skills")
+    @route("/skills")
     @tag("Skills")
     @useAuth(BearerAuth)
 
@@ -40,16 +56,17 @@ namespace SkillApi {
             @query sort_order?: "asc" | "desc",
             @query per_page?: int32,
           ): SkillPagination[];
+
         @post()
-        create(@body input: CreateSkillInput): Skill;
+        create(@body input: CreateSkillInput): Skill | ValidationErrorResponse | PermissionErrorResponse;
 
         @get()
-        show(@path skillId: int32): Skill;
+        show(@path skillId: int32): Skill | NotFoundResponse; 
+        
+        @put()
+        update(@path skillId: int32, @body input: CreateSkillInput): Skill | ValidationErrorResponse | PermissionErrorResponse;
 
-      @put()
-      update(@path skillId: int32, @body input: CreateSkillInput): Skill;
-
-      @delete()
-      delete(@path skillId: int32): void;
+        @delete()
+        delete(@path skillId: int32): void | NotFoundResponse | PermissionErrorResponse;
     }
 }
